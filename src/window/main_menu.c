@@ -8,7 +8,8 @@
 #include "graphics/graphics.h"
 #include "graphics/image.h"
 #include "graphics/image_button.h"
-#include "graphics/lang_text.h"
+//#include "graphics/lang_text.h"
+#include <libintl.h>
 #include "graphics/panel.h"
 #include "graphics/text.h"
 #include "graphics/screen.h"
@@ -20,6 +21,8 @@
 #include "window/new_career.h"
 #include "window/plain_message_dialog.h"
 #include "window/popup_dialog.h"
+
+#define _(String) gettext (String)
 
 #define MAX_BUTTONS 6
 
@@ -38,7 +41,7 @@ static generic_button buttons[] = {
 
 static void draw_version_string(void)
 {
-    uint8_t version_string[100] = "Augustus v";
+    uint8_t version_string[100] = "Initial Changes v";
     int version_prefix_length = string_length(version_string);
     int text_y = screen_height() - 30;
 
@@ -74,12 +77,18 @@ static void draw_foreground(void)
         large_label_draw(buttons[i].x, buttons[i].y, buttons[i].width / 16, focus_button_id == i + 1 ? 1 : 0);
     }
 
-    lang_text_draw_centered(30, 1, 192, 106, 256, FONT_NORMAL_GREEN);
-    lang_text_draw_centered(30, 2, 192, 146, 256, FONT_NORMAL_GREEN);
-    lang_text_draw_centered(30, 3, 192, 186, 256, FONT_NORMAL_GREEN);
-    lang_text_draw_centered(9, 8, 192, 226, 256, FONT_NORMAL_GREEN);
-    lang_text_draw_centered(2, 0, 192, 266, 256, FONT_NORMAL_GREEN);
-    lang_text_draw_centered(30, 5, 192, 306, 256, FONT_NORMAL_GREEN);
+    //lang_text_draw_centered(30, 1, 192, 106, 256, FONT_NORMAL_GREEN);
+    text_draw_centered(_("Start new career"),192,106,256,FONT_NORMAL_GREEN,0);
+    //lang_text_draw_centered(30, 2, 192, 146, 256, FONT_NORMAL_GREEN);
+    text_draw_centered(_("Load saved game"),192,146,256,FONT_NORMAL_GREEN,0);
+    //lang_text_draw_centered(30, 3, 192, 186, 256, FONT_NORMAL_GREEN);
+    text_draw_centered(_("City construction kit"),192,186,256,FONT_NORMAL_GREEN,0);
+    //lang_text_draw_centered(9, 8, 192, 226, 256, FONT_NORMAL_GREEN);
+    text_draw_centered(_("CaesarIII assignment editor"),192,226,256,FONT_NORMAL_GREEN,0);
+    //lang_text_draw_centered(2, 0, 192, 266, 256, FONT_NORMAL_GREEN);
+    text_draw_centered(_("Options"),192,266,256,FONT_NORMAL_GREEN,0);
+    //lang_text_draw_centered(30, 5, 192, 306, 256, FONT_NORMAL_GREEN);
+    text_draw_centered(_("Exit"),192,306,256,FONT_NORMAL_GREEN,0);
 
     graphics_reset_dialog();
 }
@@ -123,7 +132,10 @@ static void button_click(int type, int param2)
     } else if (type == 5) {
         window_config_show();
     } else if (type == 6) {
-        window_popup_dialog_show(POPUP_DIALOG_QUIT, confirm_exit, 1);
+        //window_popup_dialog_show(POPUP_DIALOG_QUIT, confirm_exit, 1);
+        window_popup_custom_dialog_show(_("Quit"),string_length(_("Quit")),
+                                        _("Leaving the Empire, motherfucker?"),string_length(_("Leaving the Empire, motherfucker?")),
+                                        confirm_exit,1);
     }
 }
 

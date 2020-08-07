@@ -23,6 +23,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <libintl.h>
 
 #ifdef __SWITCH__
 #include "platform/switch/switch.h"
@@ -485,6 +486,10 @@ static void teardown(void)
 
 int main(int argc, char **argv)
 {
+    setlocale (LC_ALL, "");
+    bindtextdomain ("Augustus", "");
+    textdomain ("Augustus");
+
     julius_args args;
     platform_parse_arguments(argc, argv, &args);
 
@@ -493,5 +498,5 @@ int main(int argc, char **argv)
     main_loop();
 
     teardown();
-    return 0;
+    return 1;
 }

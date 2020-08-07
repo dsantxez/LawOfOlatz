@@ -27,7 +27,7 @@ if(SWITCH_BUILD AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     endif()
 endif()
 
-set(SHORT_NAME augustus)
+set(SHORT_NAME LawOfOlatz)
 project(${SHORT_NAME} C)
 
 if (VITA_BUILD)
@@ -635,6 +635,8 @@ endfunction()
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_mixer REQUIRED)
+find_package(GETTEXT REQUIRED)
+find_package(Intl)
 
 add_executable(${SHORT_NAME} WIN32 ${SOURCE_FILES})
 
@@ -670,7 +672,7 @@ if(APPLE)
     set(MACOSX_BUNDLE_LONG_VERSION_STRING ${MACOSX_BUNDLE_BUNDLE_VERSION})
     set(MACOSX_BUNDLE_SHORT_VERSION_STRING ${MACOSX_BUNDLE_BUNDLE_VERSION})
 
-    set_target_properties(augustus PROPERTIES
+    set_target_properties(LawOfOlatz PROPERTIES
         MACOSX_BUNDLE TRUE
         MACOSX_BUNDLE_INFO_PLIST "${PROJECT_SOURCE_DIR}/res/Info.plist.in")
 
@@ -701,6 +703,8 @@ endif()
 
 include_directories(${SDL2_INCLUDE_DIR})
 include_directories(${SDL2_MIXER_INCLUDE_DIR})
+include_directories(${Intl_INCLUDE_DIRS})
+target_link_libraries(${SHORT_NAME} ${Intl_LIBRARIES})
 
 if(SYSTEM_LIBS)
     find_package(ZLIB)

@@ -6,7 +6,10 @@
 #include "graphics/lang_text.h"
 #include "graphics/panel.h"
 #include "graphics/window.h"
+#include "graphics/text.h"
 #include "input/input.h"
+
+#include <string.h>
 
 #define GROUP 5
 
@@ -29,6 +32,9 @@ static struct {
     int ok_clicked;
     void (*close_func)(int accepted);
     int has_buttons;
+    unsigned char custom_text_present;
+    uint8_t textTitle[128];
+    uint8_t textDialog[256];
 } data;
 
 static int init(popup_dialog_type type, int custom_text_group, int custom_text_id,
@@ -44,6 +50,23 @@ static int init(popup_dialog_type type, int custom_text_group, int custom_text_i
     data.ok_clicked = 0;
     data.close_func = close_func;
     data.has_buttons = has_ok_cancel_buttons;
+    data.custom_text_present=0;
+    return 1;
+}
+
+static int initCustom(uint8_t *customPopupTitle, int titleSize, uint8_t *customPopupMessage, int messageSize,
+                void (*close_func)(int accepted), int has_ok_cancel_buttons)
+{
+    if (window_is(WINDOW_POPUP_DIALOG)) {
+        // don't show popup over popup
+        return 0;
+    }
+    memcpy(data.textTitle,customPopupTitle,titleSize);
+    memcpy(data.textDialog,customPopupMessage,messageSize);
+    data.custom_text_present=1;
+    data.ok_clicked = 0;
+    data.close_func = close_func;
+    data.has_buttons = has_ok_cancel_buttons;
     return 1;
 }
 
@@ -52,16 +75,29 @@ static void draw_background(void)
     window_draw_underlying_window();
     graphics_in_dialog();
     outer_panel_draw(80, 80, 30, 10);
-    if (data.type >= 0) {
+    if (data.type >= 0 && data.custom_text_present==0) {
         lang_text_draw_centered(GROUP, data.type, 80, 100, 480, FONT_LARGE_BLACK);
         if (lang_text_get_width(GROUP, data.type + 1, FONT_NORMAL_BLACK) >= 420) {
             lang_text_draw_multiline(GROUP, data.type + 1, 110, 140, 420, FONT_NORMAL_BLACK);
         } else {
             lang_text_draw_centered(GROUP, data.type + 1, 80, 140, 480, FONT_NORMAL_BLACK);
         }
-    } else {
+    } else if(data.custom_text_present==0) {
         lang_text_draw_centered(data.custom_text_group, data.custom_text_id, 80, 100, 480, FONT_LARGE_BLACK);
         lang_text_draw_centered(PROCEED_GROUP, PROCEED_TEXT, 80, 140, 480, FONT_NORMAL_BLACK);
+    }
+    else
+    {
+        //lang_text_draw_centered(GROUP, data.type, 80, 100, 480, FONT_LARGE_BLACK);
+        text_draw_centered(data.textTitle,80,100,480,FONT_LARGE_BLACK,0);
+        int width = text_get_width(data.textDialog, FONT_LARGE_BLACK) + font_definition_for(FONT_LARGE_BLACK)->space_width;
+        if (width >= 470) {
+            text_draw_multiline(data.textDialog,110,140,420,FONT_NORMAL_BLACK,0);
+            //lang_text_draw_multiline(GROUP, data.type + 1, 110, 140, 420, FONT_NORMAL_BLACK);
+        } else {
+            //lang_text_draw_centered(GROUP, data.type + 1, 80, 140, 480, FONT_NORMAL_BLACK);
+            text_draw_centered(data.textDialog,80,140,480,FONT_NORMAL_BLACK,0);
+        }
     }
     graphics_reset_dialog();
 }
@@ -106,6 +142,21 @@ static void confirm(void)
 {
     window_go_back();
     data.close_func(1);
+}
+
+void window_popup_custom_dialog_show(const char *title, int titleSize, const char *message, int messageSize,
+                                     void (*close_func)(int accepted), int has_ok_cancel_buttons)
+{
+    if(initCustom(title,titleSize,message,messageSize,close_func,has_ok_cancel_buttons))
+    {
+        window_type window = {
+            WINDOW_POPUP_DIALOG,
+            draw_background,
+            draw_foreground,
+            handle_input
+        };
+        window_show(&window);
+    }
 }
 
 void window_popup_dialog_show(popup_dialog_type type,
