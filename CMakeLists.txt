@@ -32,7 +32,7 @@ project(${SHORT_NAME} C)
 
 if (VITA_BUILD)
     include("${VITASDK}/share/vita.cmake" REQUIRED)
-    set(VITA_TITLEID  "AUGUSTUS001")
+    set(VITA_TITLEID  "LAWOFOLATZ001")
 endif()
 
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${CMAKE_SOURCE_DIR}/cmake/")
@@ -53,9 +53,9 @@ if (CMAKE_COMPILER_IS_GNUCC)
     endif()
 endif()
 
-set(PROJECT_VERSION_MAJOR 1)
-set(PROJECT_VERSION_MINOR 4)
-set(PROJECT_VERSION_PATCH 1A)
+set(PROJECT_VERSION_MAJOR 0)
+set(PROJECT_VERSION_MINOR 0)
+set(PROJECT_VERSION_PATCH 1a)
 set(IS_RELEASE_VERSION FALSE)
 
 if(IS_RELEASE_VERSION)
@@ -586,7 +586,7 @@ set(TRANSLATION_FILES
 
 set(MACOSX_FILES "")
 if(APPLE)
-    set(MACOSX_FILES ${PROJECT_SOURCE_DIR}/res/augustus.icns)
+    set(MACOSX_FILES ${PROJECT_SOURCE_DIR}/res/lawofolatz.icns)
 endif()
 
 set(SOURCE_FILES
@@ -608,7 +608,7 @@ set(SOURCE_FILES
     ${EDITOR_FILES}
     ${TRANSLATION_FILES}
     ${TINYFD_FILES}
-    ${PROJECT_SOURCE_DIR}/res/augustus.rc
+    ${PROJECT_SOURCE_DIR}/res/lawofolatz.rc
     ${MACOSX_FILES}
 )
 
@@ -636,7 +636,7 @@ endfunction()
 find_package(SDL2 REQUIRED)
 find_package(SDL2_mixer REQUIRED)
 find_package(GETTEXT REQUIRED)
-find_package(Intl)
+find_package(Intl REQUIRED)
 
 add_executable(${SHORT_NAME} WIN32 ${SOURCE_FILES})
 
@@ -646,27 +646,27 @@ endif()
 
 if(APPLE)
     # generating a macOS icns file (see https://stackoverflow.com/a/20703594)
-    add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/res/augustus.icns
-        COMMAND mkdir -p augustus.iconset
-        COMMAND sips -z 16 16    augustus_256.png --out augustus.iconset/icon_16x16.png
-        COMMAND sips -z 32 32    augustus_256.png --out augustus.iconset/icon_16x16@2x.png
-        COMMAND sips -z 32 32    augustus_256.png --out augustus.iconset/icon_32x32.png
-        COMMAND sips -z 64 64    augustus_256.png --out augustus.iconset/icon_32x32@2x.png
-        COMMAND sips -z 128 128  augustus_256.png --out augustus.iconset/icon_128x128.png
-        COMMAND sips -z 256 256  augustus_256.png --out augustus.iconset/icon_128x128@2x.png
-        COMMAND sips -z 256 256  augustus_256.png --out augustus.iconset/icon_256x256.png
-        COMMAND sips -z 512 512  augustus_512.png --out augustus.iconset/icon_256x256@2x.png
-        COMMAND iconutil -c icns augustus.iconset
-        COMMAND rm -R augustus.iconset
+    add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/res/lawofolatz.icns
+        COMMAND mkdir -p lawofolatz.iconset
+        COMMAND sips -z 16 16    augustus_256.png --out lawofolatz.iconset/icon_16x16.png
+        COMMAND sips -z 32 32    augustus_256.png --out lawofolatz.iconset/icon_16x16@2x.png
+        COMMAND sips -z 32 32    augustus_256.png --out lawofolatz.iconset/icon_32x32.png
+        COMMAND sips -z 64 64    augustus_256.png --out lawofolatz.iconset/icon_32x32@2x.png
+        COMMAND sips -z 128 128  augustus_256.png --out lawofolatz.iconset/icon_128x128.png
+        COMMAND sips -z 256 256  augustus_256.png --out lawofolatz.iconset/icon_128x128@2x.png
+        COMMAND sips -z 256 256  augustus_256.png --out lawofolatz.iconset/icon_256x256.png
+        COMMAND sips -z 512 512  augustus_512.png --out lawofolatz.iconset/icon_256x256@2x.png
+        COMMAND iconutil -c icns lawofolatz.iconset
+        COMMAND rm -R lawofolatz.iconset
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/res)
-    set_source_files_properties(${PROJECT_SOURCE_DIR}/res/augustus.icns PROPERTIES
+    set_source_files_properties(${PROJECT_SOURCE_DIR}/res/lawofolatz.icns PROPERTIES
         MACOSX_PACKAGE_LOCATION "Resources")
 
     # setting variables that will populate Info.plist
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "nl.biancavanschaik.julius")
     set(MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME})
-    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.10" CACHE STRING "Minimum OS X deployment version" FORCE)
-    set(MACOSX_BUNDLE_ICON_FILE "augustus.icns")
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "Minimum OS X deployment version" FORCE)
+    set(MACOSX_BUNDLE_ICON_FILE "lawofolatz.icns")
     set(MACOSX_BUNDLE_BUNDLE_VERSION
         "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}${VERSION_REVISION}")
     set(MACOSX_BUNDLE_LONG_VERSION_STRING ${MACOSX_BUNDLE_BUNDLE_VERSION})
